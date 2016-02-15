@@ -11,13 +11,6 @@ class Router {
     };
   }
 
-  static newTodoForm() {
-    let NewTodoFormScene = require('./scenes/NewTodoFormScene');
-    return {
-      component: NewTodoFormScene,
-    };
-  }
-
 }
 
 module.exports = Router;
