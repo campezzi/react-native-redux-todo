@@ -74,9 +74,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'green',
   },
   title: {
+    color: 'red',
     fontSize: 16,
   },
   titleDone: {
+    color: 'green',
     textDecorationLine: 'line-through',
   },
 });
