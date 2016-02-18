@@ -25,7 +25,7 @@ class NewTodoRow extends React.Component {
           placeholder="New Todo"
           value={this.state.title}
           onChangeText={ (text) => this.setState({title: text}) }
-          onEndEditing={this._onEndEditing}
+          onSubmitEditing={this._onEndEditing}
         />
       </View>
     );
