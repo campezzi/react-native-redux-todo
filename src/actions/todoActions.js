@@ -45,3 +45,10 @@ export function toggleTodo(todo) {
     todo,
   };
 }
+
+export function setVisibilityFilter(filter) {
+  return {
+    type: types.SET_VISIBILITY_FILTER,
+    newFilter: filter,
+  };
+}

@@ -2,7 +2,7 @@ import * as types from '../actions/actionTypes';
 
 const initialState = {
   items: [],
-  visiblityFilter: 'ALL',
+  visibilityFilter: 'ALL',
 };
 
 export default function todo(state = initialState, action = {}) {
@@ -34,6 +34,11 @@ export default function todo(state = initialState, action = {}) {
           toggledTodo,
           ...items.slice(index + 1),
         ],
+      };
+    case types.SET_VISIBILITY_FILTER:
+      return {
+        ...state,
+        visibilityFilter: action.newFilter,
       };
     default:
       return state;

@@ -13,8 +13,11 @@ import FakeNavigationBar from '../components/FakeNavigationBar';
 import NavigationBarButton from '../components/NavigationBarButton';
 import NewTodoRow from '../components/NewTodoRow';
 import TodoRow from '../components/TodoRow';
+import TodoFilters from '../components/TodoFilters';
 
 class TodoListScene extends React.Component {
+
+  // lifecycle
 
   constructor(props) {
     super(props);
@@ -26,26 +29,42 @@ class TodoListScene extends React.Component {
     let ds = new ListView.DataSource({
       rowHasChanged: (r1, r2) => r1 !== r2,
     });
+    let filteredTodos = this._filterTodos(props.todos, props.visibilityFilter);
     this.state = {
-      dataSource: ds.cloneWithRows(props.todos),
+      dataSource: ds.cloneWithRows(filteredTodos),
     };
   }
 
   componentDidMount() {
+    console.log(this.props);
     this.props.actions.loadTodos();
   }
 
   componentWillReceiveProps(nextProps) {
     let { dataSource } = this.state;
-    let { todos } = nextProps;
+    let todos = this._filterTodos(nextProps.todos, nextProps.visibilityFilter);
     this.setState({ dataSource: dataSource.cloneWithRows(todos) })
   }
 
+
+  // rendering
+
   render() {
+    let filters = {
+      'ALL': 'All',
+      'PENDING': 'Pending',
+      'DONE': 'Done',
+    };
+    let { actions } = this.props;
     return (
       <View style={styles.container}>
         <FakeNavigationBar title="Todo List" rightButton={this._renderRightButton()} />
         <NewTodoRow onEndEditing={this._addTodo} />
+        <TodoFilters
+          options={filters}
+          selected={this.props.visibilityFilter}
+          onChange={(filter) => actions.setVisibilityFilter(filter)}
+        />
         <ListView
           dataSource={this.state.dataSource}
           renderRow={this._renderTodo}
@@ -61,6 +80,9 @@ class TodoListScene extends React.Component {
   _renderRightButton() {
     return <NavigationBarButton title="Clear" onPress={this._clearTodos} />
   }
+
+
+  // component callbacks
 
   _addTodo(title) {
     if (!title) return;
@@ -83,10 +105,29 @@ class TodoListScene extends React.Component {
     saveTodos();
   }
 
+
+  // helpers
+
+  _filterTodos(todos, visibilityFilter) {
+    switch (visibilityFilter) {
+      case 'DONE':
+        return todos.filter((todo) => todo.done);
+      case 'PENDING':
+        return todos.filter((todo) => !todo.done);
+      default:
+        return todos;
+    }
+  }
+
 }
 
-let mapState = (state) => ({ todos: state.todo.items });
-let mapActions = (dispatch) => ({ actions: bindActionCreators(todoActions, dispatch) });
+let mapState = (state) => ({
+  todos: state.todo.items,
+  visibilityFilter: state.todo.visibilityFilter
+});
+let mapActions = (dispatch) => ({
+  actions: bindActionCreators(todoActions, dispatch)
+});
 
 module.exports = connect(mapState, mapActions)(TodoListScene);
 
@@ -94,10 +135,4 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  addTodoButton: {
-    fontSize: 24,
-    paddingHorizontal: 18,
-    paddingTop: 4,
-    paddingBottom: 12,
-  }
 });

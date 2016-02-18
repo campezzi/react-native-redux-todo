@@ -14,7 +14,9 @@ class FakeNavigationBar extends React.Component {
   render() {
     return (
       <View style={styles.container}>
-        <View style={styles.widget}></View>
+        <View style={[styles.widget, styles.leftButton]}>
+          {this.props.leftButton}
+        </View>
         <View style={styles.widget}>
           <Text style={styles.title}>{this.props.title}</Text>
         </View>
@@ -29,6 +31,7 @@ class FakeNavigationBar extends React.Component {
 
 FakeNavigationBar.propTypes = {
   title: PropTypes.string.isRequired,
+  leftButton: PropTypes.element,
   rightButton: PropTypes.element,
 };
 
@@ -40,6 +43,9 @@ const styles = StyleSheet.create({
     height: 64,
     paddingTop: 20,
     backgroundColor: 'lightblue',
+  },
+  leftButton: {
+    alignItems: 'flex-start',
   },
   rightButton: {
     alignItems: 'flex-end',
